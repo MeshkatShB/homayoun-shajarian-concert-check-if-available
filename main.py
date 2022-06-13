@@ -13,8 +13,8 @@ PRIORITY = 1
 def main(response):
     """
     Set Scheduler to Dispatch check_if_reserve_open function at  Intervals
-    :param response:
-    :return:
+    :param response: Response of request to the URL
+    :return: None
     """
     s = sched.scheduler(time.time, time.sleep)
     s.enter(INTERVALS, PRIORITY, check_if_reserve_open, (s, response, ))
@@ -22,6 +22,12 @@ def main(response):
 
 
 def check_if_reserve_open(sc, response):
+    """
+    Checks if reserve option is available or not
+    :param sc: scheduler to dispatch which is activated in each INTERVALS
+    :param response: Response of request to the URL
+    :return: None
+    """
     if 'reserve-config' in response.text:
         # is_reserve_time_open = True
         print('GO GO GO!', )
