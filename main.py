@@ -2,7 +2,7 @@ import sched
 import time
 import os
 from bs4 import BeautifulSoup
-from telegram import send_telegram_message
+from telegram import send
 
 import requests as req
 
@@ -10,7 +10,7 @@ TIWALL_URL = 'https://www.tiwall.com/'
 SALE_URL = 's/'
 PRODUCT_URL = 'p/'
 HOMAYOUN_URL = TIWALL_URL + SALE_URL + 'homayoun.shajarian'
-INTERVALS = 3
+INTERVALS = 30
 PRIORITY = 1
 
 
@@ -28,9 +28,11 @@ def check_if_reserve_open(sc, response):
     if len(div[0]) != 23:
         print('GO GO GO!', )
         os.system('spd-say "You Can Get Your Concert Ticket Now"')
-        send_telegram_message()
+        # send_telegram_message()
+        send()
     else:
-        print("just chill & flex bro. Not Now!!!")
+        pass
+        # print("No")
 
     sc.enter(INTERVALS, PRIORITY, check_if_reserve_open, (sc, response))
 
