@@ -2,13 +2,15 @@ import sched
 import time
 import os
 from bs4 import BeautifulSoup
+from telegram import send_telegram_message
 
 import requests as req
 
-is_reserve_time_open = False
-URL = 'https://www.tiwall.com/s/homayoun.shajarian'
 TIWALL_URL = 'https://www.tiwall.com/'
-INTERVALS = 60
+SALE_URL = 's/'
+PRODUCT_URL = 'p/'
+HOMAYOUN_URL = TIWALL_URL + SALE_URL + 'homayoun.shajarian'
+INTERVALS = 3
 PRIORITY = 1
 
 
@@ -19,20 +21,18 @@ def check_if_reserve_open(sc, response):
     :param response: Response of request to the URL
     :return: None
     """
-    if 'reserve-config' in response.text:
-        # is_reserve_time_open = True
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    div = soup.find_all('select', attrs={'class': 'session', })
+
+    if len(div[0]) != 23:
         print('GO GO GO!', )
         os.system('spd-say "You Can Get Your Concert Ticket Now"')
+        send_telegram_message()
     else:
         print("just chill & flex bro. Not Now!!!")
 
-    # You can also check it with response.history in regard of response being redirected or not
-    # if len(response.history) < 2:
-    #     print(response.is_redirect)
-    #     print("JESUS, MOVE IT! Go Reserve Bro!", response.history[0].url)
-    #     os.system('spd-say "You Can Get Your Concert Ticket Now"')
-
-    sc.enter(60, 1, check_if_reserve_open, (sc, response))
+    sc.enter(INTERVALS, PRIORITY, check_if_reserve_open, (sc, response))
 
 
 def main(response):
@@ -47,5 +47,5 @@ def main(response):
 
 
 if __name__ == '__main__':
-    resp = req.get(URL, )
+    resp = req.get(HOMAYOUN_URL, )
     main(resp)
